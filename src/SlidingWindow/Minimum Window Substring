@@ -1,0 +1,41 @@
+class Solution {
+    public String minWindow(String s, String t) {
+        int[] map = new int[128];
+        // 128 Because Java characters can be mapped to ASCII codes. 
+        //ASCII Standard has 128 characters
+        char[] arr = s.toCharArray();
+        //set up the table
+        for (char cur: t.toCharArray()) {
+            map[cur]++;
+        }
+
+        int counter = 0;
+        int L = 0, R = 0, n = arr.length;
+        int minLen = Integer.MAX_VALUE;
+        String minLenStr = "";
+        while (R < n) {
+            //Expand the window
+            map[arr[R]]--;
+            //Since we are assuming that the character is there in the map.
+            if (0 <= map[arr[R]])
+                counter++;
+            //Shrink the window if the current window contains all the chars in t
+            while (counter == t.length()) {
+                //update the minLen
+                if (minLen > R - L + 1) {
+                    minLen = R - L + 1;
+                    minLenStr = s.substring(L, R + 1);
+                }
+
+                // Shrink the window
+                map[arr[L]]++;
+                if (0 < map[arr[L]]) {
+                    counter--;
+                }
+                L++;
+            }
+            R++;
+        }
+        return minLenStr;
+    }
+}
