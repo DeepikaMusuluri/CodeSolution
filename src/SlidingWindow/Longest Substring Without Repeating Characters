@@ -1,0 +1,38 @@
+class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        char[] arr = s.toCharArray();
+        int n = arr.length;
+        //Base Case
+        if (n < 2)
+            return n;
+        //Define the left and right Pointer
+        int L = 0, R = 0;
+        //Define the max Length
+        int maxLen = 0;
+        //Define the HashMap
+        Map<Character, Integer> map = new HashMap<>();
+
+        //Find the Longest Substring
+        while (R < n) {
+            map.put(arr[R], map.getOrDefault(arr[R], 0) + 1);
+            //check if we meet the condition
+            while (map.size() != R - L + 1) {
+                map.put(arr[L], map.get(arr[L]) - 1);
+
+                if (map.get(arr[L]) == 0)
+                    map.remove(arr[L]);
+
+                //Increment the Left Pointer
+                L++;
+            }
+
+            // caluculate the max length
+            maxLen = Math.max(maxLen, R - L + 1);
+
+            R++;
+        }
+
+        //Return the max Length
+        return maxLen;
+    }
+}
