@@ -1,0 +1,66 @@
+/*
+# Calculate Compressed Mean
+
+## Problem Description
+
+Given an integer array `quantities`, calculate and return the arithmetic mean (average) of all the elements in the array.
+
+The mean is calculated using:
+
+Mean = Sum of all elements / Number of elements
+
+
+Return the result as a `double`.
+
+If the input array is empty, return `0.0`.
+
+## Example
+
+### Input
+
+quantities = [2, 2, 3, 3, 4, 5, 5, 4]
+
+### Output
+
+3.5
+
+### Explanation
+
+Sum of elements = 2 + 2 + 3 + 3 + 4 + 5 + 5 + 4
+                = 28
+
+Number of elements = 8
+
+Mean = 28 / 8
+     = 3.5
+
+Therefore, the method returns `3.5`.
+
+## Java Method Signature
+
+public double calculateCompressedMean(int[] quantities)
+
+## Edge Case
+
+If the array is empty:
+
+Input: quantities = []
+Output: 0.0
+*/
+class Solution {
+
+    public double calculateCompressedMean(int[] quantities) {
+
+        if (quantities.length == 0) {
+            return 0.0;
+        }
+
+        int sum = 0;
+
+        for (int quantity : quantities) {
+            sum += quantity;
+        }
+
+        return (double) sum / quantities.length;
+    }
+}
