@@ -1,4 +1,5 @@
 /*
+Fixed-Size Window Pattern of Sliding window
 You need to create a MovingAverage class that receives numbers one at a time. This continuous arrival of numbers is called a stream.
 The class maintains a window containing only the most recent size numbers.
 For every call to:
