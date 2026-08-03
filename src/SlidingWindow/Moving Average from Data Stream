@@ -1,0 +1,114 @@
+/*
+You need to create a MovingAverage class that receives numbers one at a time. This continuous arrival of numbers is called a stream.
+The class maintains a window containing only the most recent size numbers.
+For every call to:
+
+next(val)
+
+you must:
+1. Add val to the window.
+2. If the window contains more than size numbers, remove the oldest number.
+3. Calculate the average of the numbers currently in the window.
+4. Return the average as a double.
+Example
+Suppose the object is initialized with:
+
+MovingAverage obj = new MovingAverage(3);
+
+This means the window can contain at most three numbers.
+First call
+
+obj.next(1);
+
+Only one number has been received:
+
+Window: [1]
+Average: 1 / 1 = 1.0
+
+Return:
+
+1.0
+
+Second call
+
+obj.next(10);
+
+Two numbers have been received:
+
+Window: [1, 10]
+Average: (1 + 10) / 2 = 5.5
+
+Return:
+
+5.5
+
+Because fewer than three numbers have arrived, calculate the average using the two available numbers.
+Third call
+
+obj.next(3);
+
+The window is now full:
+
+Window: [1, 10, 3]
+Average: (1 + 10 + 3) / 3 = 4.66667
+
+Return:
+
+4.66667
+
+Fourth call
+
+obj.next(5);
+
+The window already contains three numbers. Remove the oldest number, 1, and add 5:
+
+Old window: [1, 10, 3]
+New window: [10, 3, 5]
+
+Average:
+
+(10 + 3 + 5) / 3 = 6.0
+
+Return:
+
+6.0
+
+The returned results are:
+
+[1.0, 5.5, 4.66667, 6.0]
+
+The main idea is that the moving window always contains the most recent size values.
+*/
+
+class MovingAverage {
+    int size;
+    Queue<Integer> queue;
+    int sum;
+    public MovingAverage(int size) {
+        this.size = size;
+
+        /* Queue is an interface, so you cannot create an object directly from it:
+        this.queue = new Queue<>(); // Invalid
+        LinkedList is a class that implements the Queue interface. Therefore, it can behave like a FIFO queue:
+        Queue<Integer> queue = new LinkedList<>();
+        Here:
+        Queue<Integer>  → Variable/interface type
+        LinkedList<>    → Actual object implementing the queue */
+
+        this.queue = new LinkedList<Integer>();
+        this.sum=0;
+    }
+    public double next(int val) {
+
+        sum += val;
+        queue.offer(val);
+        if(queue.size() > size)
+        {
+            int old = queue.remove();
+            sum = sum - old ;
+        }
+
+        return (double)sum/queue.size();
+
+    }
+}
