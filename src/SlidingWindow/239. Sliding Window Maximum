@@ -1,0 +1,213 @@
+/*
+You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
+
+Return the max sliding window.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+Output: [3,3,5,5,6,7]
+Explanation: 
+Window position                Max
+---------------               -----
+[1  3  -1] -3  5  3  6  7       3
+ 1 [3  -1  -3] 5  3  6  7       3
+ 1  3 [-1  -3  5] 3  6  7       5
+ 1  3  -1 [-3  5  3] 6  7       5
+ 1  3  -1  -3 [5  3  6] 7       6
+ 1  3  -1  -3  5 [3  6  7]      7
+Example 2:
+
+Input: nums = [1], k = 1
+Output: [1]
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-104 <= nums[i] <= 104
+1 <= k <= nums.length
+*/
+
+import java.util.*;
+
+class Solution {
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+
+        int n = nums.length;
+        int[] result = new int[n - k + 1];
+
+        // Stores array indices
+        Deque<Integer> queue = new ArrayDeque<>();
+
+        for (int i = 0; i < n; i++) {
+
+            // Step 1: Remove indices outside the window
+            while (!queue.isEmpty() &&
+                    queue.peekFirst() <= i - k) {
+
+                queue.pollFirst();
+            }
+
+            // Step 2: Remove smaller values from the back
+            while (!queue.isEmpty() &&
+                    nums[queue.peekLast()] <= nums[i]) {
+
+                queue.pollLast();
+            }
+
+            // Step 3: Add the current index
+            queue.offerLast(i);
+
+            // Step 4: Store the maximum
+            if (i >= k - 1) {
+
+                int index = i - k + 1;
+
+                result[index] = nums[queue.peekFirst()];
+            }
+        }
+
+        return result;
+    }
+}
+/*
+The front of the queue is shown on the left.
+i	Value	Operation	Queue indices	Queue values	Result
+0	1	Add index 0	[0]	[1]	—
+1	3	Remove index 0; add 1	[1]	[3]	—
+2	-1	Add index 2	[1,2]	[3,-1]	3
+3	-3	Add index 3	[1,2,3]	[3,-1,-3]	3
+4	5	Remove expired 1; remove smaller 3,2; add 4	[4]	[5]	5
+5	3	Add index 5	[4,5]	[5,3]	5
+6	6	Remove smaller indices 5,4; add 6	[6]	[6]	6
+7	7	Remove smaller index 6; add 7	[7]	[7]	7
+Detailed trace
+i = 0, nums[i] = 1
+Add index 0
+Queue indices = [0]
+Queue values  = [1]
+Window is not complete
+i = 1, nums[i] = 3
+nums[0] <= nums[1]
+1 <= 3, so remove index 0
+Add index 1
+Queue indices = [1]
+Queue values  = [3]
+Window is not complete
+i = 2, nums[i] = -1
+-1 is smaller than 3, so nothing is removed
+Add index 2
+Queue indices = [1, 2]
+Queue values  = [3, -1]
+
+Maximum = nums[queue.peekFirst()]
+        = nums[1]
+        = 3
+i = 3, nums[i] = -3
+Index 1 is still inside the window
+-3 is smaller than -1
+Add index 3
+Queue indices = [1, 2, 3]
+Queue values  = [3, -1, -3]
+
+Maximum = nums[1] = 3
+i = 4, nums[i] = 5
+Current window starts at index 2
+
+Index 1 is expired, so remove it
+
+Queue indices = [2, 3]
+
+nums[3] = -3 <= 5, remove index 3
+nums[2] = -1 <= 5, remove index 2
+
+Add index 4
+Queue indices = [4]
+Queue values  = [5]
+
+Maximum = nums[4] = 5
+i = 5, nums[i] = 3
+3 is smaller than 5
+Add index 5
+Queue indices = [4, 5]
+Queue values  = [5, 3]
+
+Maximum = nums[4] = 5
+i = 6, nums[i] = 6
+nums[5] = 3 <= 6, remove index 5
+nums[4] = 5 <= 6, remove index 4
+
+Add index 6
+Queue indices = [6]
+Queue values  = [6]
+
+Maximum = nums[6] = 6
+i = 7, nums[i] = 7
+nums[6] = 6 <= 7, remove index 6
+
+Add index 7
+Queue indices = [7]
+Queue values  = [7]
+
+Maximum = nums[7] = 7
+Final result:
+[3, 3, 5, 5, 6, 7]
+
+*/
+
+/*
+Yes, this problem can also be solved using a PriorityQueue as a max heap.
+The priority queue stores array indices, ordered by their corresponding values. The index with the largest value remains at the top.
+*/
+
+/*
+import java.util.*;
+
+class Solution {
+
+    public int[] maxSlidingWindow(int[] nums, int k) {
+
+        int n = nums.length;
+        int[] result = new int[n - k + 1];
+
+        // Max heap storing array indices
+        PriorityQueue<Integer> queue =
+                new PriorityQueue<>(
+                    (a, b) -> Integer.compare(nums[b], nums[a])
+                );
+
+        for (int i = 0; i < n; i++) {
+
+            // Add the current index
+            queue.offer(i);
+
+            // Remove expired indices from the top
+            while (queue.peek() <= i - k) {
+                queue.poll();
+            }
+
+            // Store the maximum when the window is complete
+            if (i >= k - 1) {
+
+                int index = i - k + 1;
+
+                result[index] = nums[queue.peek()];
+            }
+        }
+
+        return result;
+    }
+}
+*/
+
+/*This technique is called lazy removal. Expired indices are removed when they reach the top of the heap.
+Priority queue vs. monotonic queue
+Approach	Time	Space	Difficulty
+Priority queue	O(n log n)	Up to O(n)	Simpler
+Monotonic queue	O(n)	O(k)	More efficient
+The monotonic queue is the optimal solution, but the priority-queue solution is also valid and often easier to understand.
+*/
