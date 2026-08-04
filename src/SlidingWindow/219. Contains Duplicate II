@@ -1,0 +1,104 @@
+
+/*
+219. Contains Duplicate II
+Easy
+
+Topics
+premium lock icon
+Companies
+Given an integer array nums and an integer k, return true if there are two distinct indices i and j in the array such that nums[i] == nums[j] and abs(i - j) <= k.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,1], k = 3
+Output: true
+Example 2:
+
+Input: nums = [1,0,1,1], k = 1
+Output: true
+Example 3:
+
+Input: nums = [1,2,3,1,2,3], k = 2
+Output: false
+*/
+import java.util.*;
+
+class Solution {
+
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+
+        int left = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int right = 0; right < nums.length; right++) {
+
+            // Keep only the previous k elements
+            while (right - left > k) {
+
+                int count = map.get(nums[left]);
+
+                if (count == 1) {
+                    map.remove(nums[left]);
+                } else {
+                    map.put(nums[left], count - 1);
+                }
+
+                left++;
+            }
+
+            // Add the current number
+            map.put(
+                nums[right],
+                map.getOrDefault(nums[right], 0) + 1
+            );
+
+            // Duplicate found within distance k
+            if (map.get(nums[right]) > 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+}
+
+/*
+For:
+nums = [1, 2, 3, 1]
+k = 3
+When right = 3, the map already contains 1, so its frequency becomes 2. Therefore, we return true.
+A HashSet is even simpler for this problem because we only need to know whether an element already exists, not its frequency.
+
+import java.util.*;
+
+class Solution {
+
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+
+        int left = 0;
+        HashSet<Integer> set = new HashSet<>();
+
+        for (int right = 0; right < nums.length; right++) {
+
+            // Keep only the previous k elements
+            while (right - left > k) {
+                set.remove(nums[left]);
+                left++;
+            }
+
+            // Check whether the current number already exists
+            if (set.contains(nums[right])) {
+                return true;
+            }
+
+            // Add the current number to the window
+            set.add(nums[right]);
+        }
+
+        return false;
+    }
+}
+
+*/
