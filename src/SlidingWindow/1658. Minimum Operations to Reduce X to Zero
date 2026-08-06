@@ -1,0 +1,42 @@
+class Solution {
+    public int minOperations(int[] nums, int x) {
+
+        int totalSum=0;
+        int windowSum=0;
+        int maxLength = -1;
+        int left = 0;
+        int target = 0;
+        int n = nums.length;
+        for(int a :nums)
+         totalSum += a;
+
+        target = totalSum - x;
+
+        if(totalSum < 0)
+        return -1;
+
+        for(int right =0;right < n ;right++)
+        {
+            windowSum += nums[right];
+            //Shrink the window if the window sum is greater than the target
+            while(windowSum > target)
+            {
+                windowSum -= nums[left];
+                left++;
+            }
+
+            //Get the max length of the subarray that is kept 
+            if(windowSum == target)
+            {
+                int windowSize = right - left +1;
+                maxLength =Math.max(maxLength , windowSize);
+            }
+        }
+
+            if(maxLength == -1)
+            return -1;
+
+            return n - maxLength;
+    }
+
+}
