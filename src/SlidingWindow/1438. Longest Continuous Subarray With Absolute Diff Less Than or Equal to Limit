@@ -1,0 +1,279 @@
+1438. Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit
+Medium
+
+Given an array of integers nums and an integer limit, return the size of the longest non-empty subarray such that the absolute difference between any two elements of this subarray is less than or equal to limit.
+ 
+Example 1:
+Input: nums = [8,2,4,7], limit = 4
+Output: 2 
+Explanation: All subarrays are: 
+[8] with maximum absolute diff |8-8| = 0 <= 4.
+[8,2] with maximum absolute diff |8-2| = 6 > 4. 
+[8,2,4] with maximum absolute diff |8-2| = 6 > 4.
+[8,2,4,7] with maximum absolute diff |8-2| = 6 > 4.
+[2] with maximum absolute diff |2-2| = 0 <= 4.
+[2,4] with maximum absolute diff |2-4| = 2 <= 4.
+[2,4,7] with maximum absolute diff |2-7| = 5 > 4.
+[4] with maximum absolute diff |4-4| = 0 <= 4.
+[4,7] with maximum absolute diff |4-7| = 3 <= 4.
+[7] with maximum absolute diff |7-7| = 0 <= 4. 
+Therefore, the size of the longest subarray is 2.
+
+Example 2:
+Input: nums = [10,1,2,4,7,2], limit = 5
+Output: 4 
+Explanation: The subarray [2,4,7,2] is the longest since the maximum absolute diff is |2-7| = 5 <= 5.
+
+Example 3:
+Input: nums = [4,2,2,2,4,4,2,2], limit = 0
+Output: 3
+
+ 
+Constraints:
+1 <= nums.length <= 105
+1 <= nums[i] <= 109
+0 <= limit <= 109
+
+Code:-
+class Solution {
+
+
+   public int longestSubarray(int[] nums, int limit) {
+
+
+       Deque<Integer> maxQueue = new ArrayDeque<>();
+       Deque<Integer> minQueue = new ArrayDeque<>();
+
+
+       int left = 0;
+       int result = 0;
+       int n = nums.length;
+       for(int right = 0; right < n; right++)
+       {
+           while(!minQueue.isEmpty() && nums[minQueue.peekLast()] > nums[right])
+           {
+               minQueue.pollLast();
+           }
+           minQueue.offerLast(right);
+
+
+           while(!maxQueue.isEmpty() && nums[maxQueue.peekLast()] < nums[right])
+           {
+               maxQueue.pollLast();
+           }
+           maxQueue.offerLast(right);
+          
+           //Shrink the window
+           while((long)(nums[maxQueue.peekFirst()] - nums[minQueue.peekFirst()]) > limit)
+           {
+               if(maxQueue.peekFirst() == left)
+                   maxQueue.pollFirst();
+               if(minQueue.peekFirst() == left)
+                   minQueue.pollFirst();
+
+
+               left++;
+           }
+
+
+           int windowSize = right - left + 1;
+           result = Math.max(result , windowSize);
+       }
+
+
+       return result;
+   }
+}
+Dry run for:
+nums = [8,2,4,7]
+limit = 4
+We maintain:
+maxQueue → decreasing order; front contains maximum
+minQueue → increasing order; front contains minimum
+Initial values:
+left = 0
+result = 0
+maxQueue = []
+minQueue = []
+Iteration 1: right = 0
+nums[right] = 8
+Add 8 to both queues:
+maxQueue = [8]
+minQueue = [8]
+Check the difference:
+maximum - minimum = 8 - 8 = 0
+Since:
+0 <= 4
+the window is valid.
+Window = [8]
+Window size = 1
+result = 1
+Iteration 2: right = 1
+nums[right] = 2
+Update maxQueue
+Current queue:
+[8]
+Because 8 is greater than 2, keep it and add 2:
+maxQueue = [8,2]
+Update minQueue
+Current queue:
+[8]
+Because 8 > 2, remove 8 and add 2:
+minQueue = [2]
+Now:
+maximum = 8
+minimum = 2
+difference = 8 - 2 = 6
+Since:
+6 > 4
+shrink the window.
+The current left index is 0, containing 8. Since index 0 is at the front of maxQueue, remove it:
+maxQueue = [2]
+minQueue = [2]
+left = 1
+Recalculate:
+maximum - minimum = 2 - 2 = 0
+The window is now valid:
+Window = [2]
+Window size = 1
+result = 1
+Iteration 3: right = 2
+nums[right] = 4
+Update maxQueue
+Current queue:
+[2]
+Because 2 < 4, remove 2 and add 4:
+maxQueue = [4]
+Update minQueue
+Current queue:
+[2]
+Because 2 < 4, keep it and add 4:
+minQueue = [2,4]
+Check:
+maximum = 4
+minimum = 2
+difference = 4 - 2 = 2
+Since:
+2 <= 4
+the window is valid.
+Window = [2,4]
+Window size = 2
+result = max(1,2) = 2
+Iteration 4: right = 3
+nums[right] = 7
+Update maxQueue
+Current queue:
+[4]
+Because 4 < 7, remove 4 and add 7:
+maxQueue = [7]
+Update minQueue
+Current queue:
+[2,4]
+Both values are smaller than 7, so keep them and add 7:
+minQueue = [2,4,7]
+Check:
+maximum = 7
+minimum = 2
+difference = 7 - 2 = 5
+Since:
+5 > 4
+shrink the window.
+The current left index is 1, containing 2. Index 1 is at the front of minQueue, so remove it:
+maxQueue = [7]
+minQueue = [4,7]
+left = 2
+Recalculate:
+maximum = 7
+minimum = 4
+difference = 7 - 4 = 3
+The window is valid:
+Window = [4,7]
+Window size = 2
+result = max(2,2) = 2
+Complete table
+right
+Added
+maxQueue after shrinking
+minQueue after shrinking
+Valid window
+Difference
+result
+0
+8
+[8]
+[8]
+[8]
+0
+1
+1
+2
+[2]
+[2]
+[2]
+0
+1
+2
+4
+[4]
+[2,4]
+[2,4]
+2
+2
+3
+7
+[7]
+[4,7]
+[4,7]
+3
+2
+
+Final answer:
+2
+The longest valid subarrays are:
+[2,4]
+[4,7]
+Both have length 2.
+Mistakes I have done
+Corrections in your code
+1. Comparing an index with a value
+You wrote:
+minQueue.peekLast() > nums[right]
+minQueue.peekLast() returns an index. You need the value at that index:
+nums[minQueue.peekLast()] > nums[right]
+The same correction applies to maxQueue:
+nums[maxQueue.peekLast()] < nums[right]
+2. Maximum and minimum are at the front
+You wrote:
+maxQueue.peekLast() - minQueue.peekLast()
+These are indices, not the maximum and minimum values.
+Use:
+nums[maxQueue.peekFirst()] - nums[minQueue.peekFirst()]
+The queue fronts contain the current maximum and minimum.
+3. Compare with left, not right
+When shrinking, the element leaving the window is nums[left].
+You wrote:
+if (maxQueue.peekFirst() == right)
+It should be:
+if (maxQueue.peekFirst() == left)
+4. Remove from the correct queue
+You wrote:
+if (minQueue.peekFirst() == right)
+    maxQueue.pollFirst();
+It should remove from minQueue:
+if (minQueue.peekFirst() == left) {
+    minQueue.pollFirst();
+}
+
+1. Use peekFirst() to get the maximum and minimum
+You wrote:
+nums[maxQueue.peekLast()] - nums[minQueue.peekLast()]
+The maximum and minimum are stored at the front:
+nums[maxQueue.peekFirst()] - nums[minQueue.peekFirst()]
+2. Remove from minQueue, not maxQueue
+You wrote:
+if (minQueue.peekFirst() == left)
+    maxQueue.pollFirst();
+It should be:
+if (minQueue.peekFirst() == left)
+    minQueue.pollFirst();
+
