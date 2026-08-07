@@ -1,0 +1,30 @@
+import java.util.Arrays;
+
+class Solution {
+
+    public int maximumBeauty(int[] nums, int k) {
+
+        Arrays.sort(nums);
+
+        int left = 0;
+        int result = 1;
+
+        for (int right = 0; right < nums.length; right++) {
+
+            int currentRangeStart = nums[right] - k;
+            int firstRangeEnd = nums[left] + k;
+
+            while (currentRangeStart > firstRangeEnd) {
+                left++;
+
+                currentRangeStart = nums[right] - k;
+                firstRangeEnd = nums[left] + k;
+            }
+
+            int windowSize = right - left + 1;
+            result = Math.max(result, windowSize);
+        }
+
+        return result;
+    }
+}
