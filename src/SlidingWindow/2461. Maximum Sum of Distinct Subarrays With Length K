@@ -1,0 +1,46 @@
+import java.util.*;
+
+class Solution {
+
+    public long maximumSubarraySum(int[] nums, int k) {
+
+        HashSet<Integer> set = new HashSet<>();
+
+        int left = 0;
+        long windowSum = 0;
+        long result = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+
+            /*
+             * If nums[right] is already present,
+             * shrink until its previous occurrence leaves.
+             */
+            while (set.contains(nums[right])) {
+
+                set.remove(nums[left]);
+                windowSum -= nums[left];
+                left++;
+            }
+
+            // Add current element
+            set.add(nums[right]);
+            windowSum += nums[right];
+
+            // Keep the window size at most k
+            while (right - left + 1 > k) {
+
+                set.remove(nums[left]);
+                windowSum -= nums[left];
+                left++;
+            }
+
+            // Update only when window size is exactly k
+            if (right - left + 1 == k) {
+                result = Math.max(result, windowSum);
+            }
+        }
+
+        return result;
+    }
+}
