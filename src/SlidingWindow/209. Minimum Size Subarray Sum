@@ -1,0 +1,32 @@
+class Solution {
+
+    public int minSubArrayLen(int target, int[] nums) {
+
+        int left = 0;
+        int result = Integer.MAX_VALUE;
+        long currentSum = 0;
+
+        for (int right = 0; right < nums.length; right++) {
+
+            // Expand the window
+            currentSum += nums[right];
+
+            /*
+             * The window is valid whenever:
+             * currentSum >= target
+             */
+            while (currentSum >= target) {
+
+                // Record the valid window before shrinking
+                int windowSize = right - left + 1;
+                result = Math.min(result, windowSize);
+
+                // Shrink to search for a shorter valid window
+                currentSum -= nums[left];
+                left++;
+            }
+        }
+
+        return result == Integer.MAX_VALUE ? 0 : result;
+    }
+}
