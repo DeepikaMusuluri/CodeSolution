@@ -1,0 +1,40 @@
+class Solution {
+    public int compress(char[] chars) {
+
+        int slow = 0;
+        int write = 0;
+        int n = chars.length;
+
+        while (slow < n) {
+
+            int fast = slow;
+
+            // Find the end of the current group
+            while (fast < n && chars[fast] == chars[slow]) {
+                fast++;
+            }
+
+            // Write the character
+            chars[write] = chars[slow];
+            write++;
+
+            int count = fast - slow;
+
+            // Write count only if count > 1
+            if (count > 1) {
+
+                String countString = String.valueOf(count);
+
+                for (int i = 0; i < countString.length(); i++) {
+                    chars[write] = countString.charAt(i);
+                    write++;
+                }
+            }
+
+            // Start next group
+            slow = fast;
+        }
+
+        return write;
+    }
+}
