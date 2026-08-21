@@ -1,0 +1,46 @@
+class Solution {
+    public boolean canChange(String start, String target) {
+
+        int slow = 0;
+        int fast = 0;
+        int n = start.length();
+
+        while (slow < n || fast < n) {
+
+            // Skip blanks in start
+            while (slow < n && start.charAt(slow) == '_') {
+                slow++;
+            }
+
+            // Skip blanks in target
+            while (fast < n && target.charAt(fast) == '_') {
+                fast++;
+            }
+
+            // One or both pointers reached the end
+            if (slow == n || fast == n) {
+                return slow == n && fast == n;
+            }
+
+            // L/R order must be the same
+            if (start.charAt(slow) != target.charAt(fast)) {
+                return false;
+            }
+
+            // L cannot move right
+            if (start.charAt(slow) == 'L' && slow < fast) {
+                return false;
+            }
+
+            // R cannot move left
+            if (start.charAt(slow) == 'R' && slow > fast) {
+                return false;
+            }
+
+            slow++;
+            fast++;
+        }
+
+        return true;
+    }
+}
