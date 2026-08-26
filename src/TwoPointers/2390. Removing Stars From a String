@@ -1,0 +1,17 @@
+class Solution {
+    public String removeStars(String s) {
+        char[] characters = s.toCharArray();
+        int write = 0;
+
+        for (int read = 0; read < characters.length; read++) {
+            if (characters[read] == '*') {
+                write--;
+            } else {
+                characters[write] = characters[read];
+                write++;
+            }
+        }
+
+        return new String(characters, 0, write);
+    }
+}
