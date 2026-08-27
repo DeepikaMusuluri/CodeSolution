@@ -1,0 +1,40 @@
+class Solution {
+
+    private int bestStart;
+    private int bestLength;
+
+    public String longestPalindrome(String s) {
+
+        bestStart = 0;
+        bestLength = 1;
+
+        for (int center = 0; center < s.length(); center++) {
+
+            // Odd-length palindrome
+            expand(s, center, center);
+
+            // Even-length palindrome
+            expand(s, center, center + 1);
+        }
+
+        return s.substring(bestStart, bestStart + bestLength);
+    }
+
+    private void expand(String s, int left, int right) {
+
+        while (left >= 0
+                && right < s.length()
+                && s.charAt(left) == s.charAt(right)) {
+
+            int currentLength = right - left + 1;
+
+            if (currentLength > bestLength) {
+                bestStart = left;
+                bestLength = currentLength;
+            }
+
+            left--;
+            right++;
+        }
+    }
+}
